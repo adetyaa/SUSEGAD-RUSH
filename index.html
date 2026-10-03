@@ -269,7 +269,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .shop-item.eq{background:var(--sun)}
 .shop-item .sw{display:flex;gap:3px;margin-bottom:4px}.shop-item .sw i{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink)}
 @media (max-width:760px){
-  .captions{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 104px)}
+  .captions{bottom:calc(max(10px,env(safe-area-inset-bottom)) + 138px)}
   .w-hint{display:none}
   #title .panel{background:linear-gradient(180deg,rgba(4,106,56,.95) 0%,rgba(4,106,56,.9) 70%,rgba(4,106,56,.75) 100%);width:100vw}
   .sunrise{right:6%;width:160px;height:80px}
@@ -284,16 +284,21 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
   .hud-tc{top:auto;bottom:calc(max(14px,env(safe-area-inset-bottom)) + 54px)}
   .clockbar .track{width:90px}
   .wispr{width:calc(100vw - 28px);bottom:max(10px,env(safe-area-inset-bottom))}
-  .hud-bl{bottom:calc(max(14px,env(safe-area-inset-bottom)) + 100px);max-width:70vw}
+  .hud-bl{left:0;right:0;max-width:none;bottom:calc(max(10px,env(safe-area-inset-bottom)) + 114px);padding:0 10px;flex-direction:row;align-items:center;gap:6px}
+  .hype{padding:4px 6px;gap:4px;flex:0 0 auto}
+  .hype small{display:none}
+  #powers{flex-wrap:nowrap;overflow-x:auto;gap:5px;pointer-events:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;min-width:0}
+  #powers::-webkit-scrollbar{display:none}
   .hud-br{top:68px;bottom:auto}
   .level,#heard{display:none}
   .cheat{white-space:normal;width:calc(100vw - 28px);bottom:auto;top:116px;font-size:10.5px;padding:6px 10px}
   .banner b{font-size:24px}
   .banner em{font-size:10.5px}
-  .pow{padding:2px 6px 3px}
-  .pow b{font-size:10.5px}
-  .pow small{font-size:8.5px}
-  .segs i{width:26px}
+  .pow{padding:4px 7px;flex:0 0 auto;border-radius:999px}
+  .pow b{font-size:10px;letter-spacing:.02em}
+  .pow small{display:none}
+  .pow:not(.on){opacity:.75}
+  .segs i{width:16px;height:10px}
   .how-grid{grid-template-columns:1fr}
   .banner.show{top:215px}
   .banner .inner{min-width:200px;padding:5px 14px 6px}
