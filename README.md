@@ -12,15 +12,15 @@ The whole game is one file, `index.html` (Three.js loads from a CDN).
 ```bash
 python -m http.server 8000
 ```
-Then open http://localhost:8000 in Chrome. Voice needs localhost or https.
+Then open http://localhost:8000. The game never asks for microphone permission; all voice input comes from Wispr Flow.
 
 ## Controls
-| Action | Voice | Keys | Touch |
+| Action | Keys | Touch | Wispr Flow |
 |---|---|---|---|
-| Left / Right | "left" / "right" (baayein / daayein) | ← → or A D | swipe |
-| Jump | "jump" (kood). Louder = higher | ↑, W, Space | swipe up |
-| Slide | "slide" (jhuko) | ↓, S | swipe down |
-| Pause | "pause" | Esc | ⏸ |
+| Left / Right | ← → or A D | swipe | "left" / "right" |
+| Jump | ↑, W, Space | swipe up | "jump" |
+| Slide | ↓, S | swipe down | "slide" |
+| Pause | Esc | ⏸ | "pause" |
 
 ## Wispr Flow
 The **WISPR FLOW** bar stays focused during a run. Hold your Wispr key, say a power word, release, and it fires. Press `/` to type a word by hand.

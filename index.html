@@ -339,10 +339,9 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
     </div>
     <div class="play-row">
       <button id="playBtn" class="btn-primary">▶ PLAY</button>
-      <div class="play-hint">Chrome asks for the mic on Play.<br>Say <b style="color:var(--sun)">LEFT · RIGHT · JUMP · SLIDE</b></div>
+      <div class="play-hint">No mic permission needed.<br>Move with <b style="color:var(--sun)">← → ↑ ↓ / WASD / swipe</b>,<br>fire powers with <b style="color:var(--sun)">Wispr Flow</b>.</div>
     </div>
     <div class="row">
-      <button id="voiceBtn" class="btn-sign"><span>VOICE: ON</span></button>
       <button id="shopBtn" class="btn-sign"><span>SHOP</span></button>
       <button id="howBtn" class="btn-sign y"><span>HOW TO PLAY</span></button>
       <button id="muteBtnT" class="btn-sign y"><span>SOUND: ON</span></button>
@@ -388,8 +387,6 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
     </div>
   </div>
   <div class="hud-br">
-    <div id="micBadge" class="mic"><i class="dot"></i><span id="micText">VOICE OFF</span></div>
-    <div class="level"><div id="micLevel"></div></div>
     <div id="heard"></div>
   </div>
   <div id="wispr" class="wispr pe">
@@ -400,7 +397,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
   </div>
   <div id="captions" class="captions"></div>
   <div id="cheat" class="cheat">
-    Say <b>LEFT</b> · <b>RIGHT</b> · <b>JUMP</b> · <b>SLIDE</b> &nbsp;(baayein · daayein · kood · jhuko)<br>
+    Move: <b>← → ↑ ↓</b> / WASD / Space / swipe &nbsp;·&nbsp; Hold your <b>Wispr Flow</b> key and say a power word<br>
     or <b>← → ↑ ↓</b> / Space / swipe &nbsp;·&nbsp; Power words: <em>SURFBOARD · PARAGLIDER · SCOOTER · SHIP IT · DEPLOY · HOTFIX · MINT · COCONUT · CHAI</em><br>Say two at once for a COMBO · Shout “GOA!” · High-five fans from the edge lanes · Run up ramps onto bus roofs
   </div>
 </div>
@@ -459,8 +456,8 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
     <div class="label">✦ CHEAT SHEET</div>
     <h2>How to play</h2>
     <div class="how-grid">
-      <div><h3>MOVE</h3>Say <b>LEFT</b> <b>RIGHT</b> <b>JUMP</b> <b>SLIDE</b> (also “up”, “down”).<br>Hindi: baayein · daayein · kood · jhuko.<br>Keys: <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> <kbd>Space</kbd> or WASD. Phone: swipe.</div>
-      <div><h3>VOLUME = POWER</h3>Shout “JUMP!” to jump higher (0.8x to 1.4x). The mic bar shows your level.</div>
+      <div><h3>MOVE</h3>Keys: <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> <kbd>Space</kbd> or WASD. Phone: swipe.<br>You can also dictate “left”, “right”, “jump” or “slide” with Wispr Flow.</div>
+      <div><h3>NO MIC PROMPTS</h3>The game never asks for microphone access. All voice goes through Wispr Flow, which types what you say into the bar.</div>
       <div><h3>POWER WORDS (spend HYPE)</h3><b>SURFBOARD</b> 1 · ride a board that eats one crash<br><b>SHIP IT</b> 2 · 5 s boost, invincible, score x2<br><b>DEPLOY</b> 1 · shield blocks the next hit<br><b>HOTFIX</b> 1 · push the Demo Day clock back<br><b>MINT</b> 1 · coin magnet<br><b>PARAGLIDER</b> 2 · fly above traffic, collect sky coins<br><b>SCOOTER</b> 2 · ride a Vespa, smash traffic<br><b>COCONUT</b> 1 · shield that blocks 2 hits<br><b>CHAI</b> 1 · slow time down<br>Keys <kbd>1</kbd>–<kbd>9</kbd> or tap the chips. Say two at once for a <b>VOICE COMBO</b>.</div>
       <div><h3>WISPR FLOW</h3>The cream <b>WISPR FLOW</b> bar at the bottom is always focused while you run. Hold your Wispr Flow key, say “surfboard” (or any power word), release, and the word is typed in and fires the power.</div>
       <div><h3>TERMINAL GATES</h3>About every 900 m time slows and a terminal opens. Type or dictate the command within 6 s (85% match is enough). Pass: +500 and a free HYPE segment.</div>
@@ -3229,7 +3226,7 @@ const AU = {
 const UI = {
   title: $('#title'), hud: $('#hud'), score: $('#score'), mult: $('#mult'), coins: $('#coins'), dist: $('#dist'), grace: $('#grace'),
   clockFill: $('#clockFill'), clockLbl: $('#clockLbl'), actives: $('#actives'), segs: $$('#hypeSegs i'), pows: $$('.pow'),
-  micBadge: $('#micBadge'), micText: $('#micText'), micLevel: $('#micLevel'), heard: $('#heard'), wIn: $('#wisprIn'), wAck: $('#wisprAck'),
+  heard: $('#heard'), wIn: $('#wisprIn'), wAck: $('#wisprAck'),
   cheat: $('#cheat'), banner: $('#banner'), countdown: $('#countdown'), toast: $('#toast'), floaters: $('#floaters'), vignette: $('#vignette'), speed: $('#speedlines'),
   term: { el: $('#terminal'), phrase: $('#termPhrase'), input: $('#termIn'), match: $('#termMatch'), time: $('#termTime'), fill: $('#termFill'), label: $('#termLabel') },
   act: {}, captions: $('#captions'), flares: $('#flares'), chai: $('#chaiTint'), bossPill: $('#bossPill'), wispr: $('#wispr'), coco: $('#cocoPill'),
@@ -3289,14 +3286,13 @@ function updateHUD() {
   setS(UI.chai, 'opacity', S.fx.chai > 0 ? '1' : '0');
   UI.coco.classList.toggle('hidden', !(S.coco > 0)); if (S.coco > 0) setT(UI.coco, `COCONUT x${S.coco}`);
   UI.speed.classList.toggle('on', (S.fx.ship > 0 || S.fx.scoot > 0) && !REDUCED);
-  setS(UI.micLevel, 'width', (Voice.level * 100).toFixed(0) + '%');
   if (S.mode === 'run' && !TOUCH && !G.open && (document.activeElement === document.body || document.activeElement === null)) focusWispr();
 }
 function focusWispr() { if (!TOUCH && S.mode === 'run' && !G.open && document.activeElement !== UI.wIn) UI.wIn.focus({ preventScroll: true }); }
 let ackT = 0;
 function wAck(text) { setT(UI.wAck, text); clearTimeout(ackT); ackT = setTimeout(() => setT(UI.wAck, ''), 1500); }
 
-/* ============================== VOICE (Web Speech API + mic level) ============================== */
+/* ============================== VOICE WORDS (shared by the Wispr Flow bar) ============================== */
 const VCMD = [
   ['left', ['left', 'lift', 'laft', 'leff', 'lefty', 'baayein', 'bayen', 'baaye', 'baye', 'bae', 'baen', 'bayein', 'baen', 'बाएं', 'बाएँ', 'बाये', 'बायें']],
   ['right', ['right', 'write', 'rite', 'wright', 'daayein', 'dayen', 'daaye', 'daye', 'dae', 'daen', 'dayein', 'दाएं', 'दाएँ', 'दाये', 'दायें']],
@@ -3338,96 +3334,8 @@ function command(name, src) {
   act(name, mult);
   if (src === 'voice') heard(name.toUpperCase() + (name === 'jump' && Voice.analyser ? ` ${mult.toFixed(1)}x` : ''));
 }
-const Voice = {
-  supported: !!(window.SpeechRecognition || window.webkitSpeechRecognition),
-  rec: null, want: false, running: false, status: 'off', processed: new Map(), lastCmd: {}, level: 0, peak: 0, analyser: null, data: null, stream: null, errs: [],
-  setStatus(st) { this.status = st; voiceStatusUI(st); },
-  async start() {
-    this.want = true;
-    if (!this.supported) { this.setStatus('unsupported'); this.want = false; return; }
-    this.setStatus('starting');
-    try {
-      if (!this.stream && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        this.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
-        if (AU.ctx) { const src = AU.ctx.createMediaStreamSource(this.stream); this.analyser = AU.ctx.createAnalyser(); this.analyser.fftSize = 512; this.data = new Float32Array(this.analyser.fftSize); src.connect(this.analyser); }
-      }
-    } catch (err) {
-      if (err && (err.name === 'NotAllowedError' || err.name === 'SecurityError')) { this.want = false; this.setStatus('denied'); return; }
-      if (err && err.name === 'NotFoundError') { this.want = false; this.setStatus('nomic'); return; }
-    }
-    if (!this.want) return;
-    this.startRec();
-  },
-  startRec() {
-    if (this.running) return;
-    if (!this.rec) {
-      const SR = window.SpeechRecognition || window.webkitSpeechRecognition, r = new SR();
-      r.continuous = true; r.interimResults = true; r.lang = 'en-IN'; r.maxAlternatives = 1;
-      r.onstart = () => { this.running = true; this.processed.clear(); this.setStatus('live'); };
-      r.onresult = e => this.onResult(e);
-      r.onerror = e => {
-        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { this.want = false; this.setStatus('denied'); }
-        else if (e.error === 'audio-capture') { this.want = false; this.setStatus('nomic'); }
-        else if (e.error === 'network') {
-          const now = performance.now(); this.errs = this.errs.filter(t => now - t < 15000); this.errs.push(now);
-          if (this.errs.length >= 3) { this.want = false; this.setStatus('network'); }
-        }
-      };
-      r.onend = () => {
-        this.running = false; this.processed.clear();
-        if (this.want) setTimeout(() => { if (this.want && !this.running) { try { this.rec.start(); } catch (_) { } } }, 200);
-        else if (this.status === 'live' || this.status === 'starting') this.setStatus('off');
-      };
-      this.rec = r;
-    }
-    try { this.rec.start(); } catch (_) { }
-  },
-  stop() { this.want = false; try { this.rec && this.rec.stop(); } catch (_) { } this.setStatus('off'); },
-  onResult(e) {
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      const res = e.results[i], raw = res[0].transcript.trim(), words = norm(raw).split(' ').filter(Boolean);
-      if (raw && S.mode === 'run') caption('🗣', raw, 'voice', !res.isFinal);
-      let done = this.processed.get(i) || 0; if (words.length < done) done = words.length;
-      for (let j = done; j < words.length; j++) {
-        const m = interpretWord(words[j], j > 0 ? words[j - 1] : null);
-        if (!m) continue;
-        if (m.t === 'cmd') {
-          const now = performance.now(), last = this.lastCmd[m.n];
-          if (last && last.i !== i && now - last.t < 250) continue;
-          this.lastCmd[m.n] = { t: now, i };
-          command(m.n, 'voice');
-        } else if (m.t === 'shout') shout(m.n);
-        else if (!G.open) tryPower(m.n, 'VOICE');
-      }
-      this.processed.set(i, words.length);
-    }
-  },
-  updateLevel(dt) {
-    if (this.analyser && this.data) {
-      this.analyser.getFloatTimeDomainData(this.data);
-      let s = 0; for (let i = 0; i < this.data.length; i++) s += this.data[i] * this.data[i];
-      const rms = Math.sqrt(s / this.data.length), tgt = clamp((rms - 0.01) * 9, 0, 1);
-      this.level = damp(this.level, tgt, tgt > this.level ? 25 : 6, dt);
-    } else this.level = damp(this.level, 0, 6, dt);
-    this.peak = Math.max(this.level, this.peak - dt * 0.9);
-  },
-};
-const VOICE_MSG = {
-  denied: 'Mic blocked. Allow it in the address bar, or use the keyboard.',
-  unsupported: 'Live voice needs Chrome or Edge. Keyboard, touch and the Wispr Flow bar still work.',
-  nomic: 'No microphone found. Plug one in, or use the keyboard.',
-  network: 'Chrome’s speech service is offline. The Wispr Flow bar, keyboard and touch still work.',
-};
-function voiceStatusUI(st) {
-  const map = { live: ['MIC LIVE', 'live'], off: ['VOICE OFF', ''], starting: ['MIC…', ''], denied: ['MIC BLOCKED', 'bad'], unsupported: ['NO LIVE VOICE', 'bad'], nomic: ['NO MIC', 'bad'], network: ['VOICE OFFLINE', 'bad'] };
-  const [txt, cls] = map[st] || map.off;
-  UI.micText.textContent = txt; UI.micBadge.className = 'mic ' + cls;
-  const m = VOICE_MSG[st], tm = $('#titleMsg');
-  if (m) {
-    tm.textContent = m + (location.protocol === 'file:' ? ' Tip: serve the file from localhost (python -m http.server) for the best voice support.' : '');
-    tm.classList.remove('hidden'); if (S.mode === 'run' || S.mode === 'countdown') toast(m);
-  } else tm.classList.add('hidden');
-}
+// Browser mic / Web Speech API removed on purpose: no permission prompts. Voice comes only from Wispr Flow.
+const Voice = { level: 0, peak: 0, analyser: null, status: 'wispr', updateLevel() { } };
 
 /* ============================== WISPR FLOW COMMAND BAR ============================== */
 // Wispr Flow pastes dictated text into the focused field. This bar stays focused during a run, so
@@ -3536,7 +3444,6 @@ function resetRun() {
 function hideOverlays() { ['#pause', '#over', '#howto', '#shop'].forEach(s => $(s).classList.add('hidden')); }
 function startRun() {
   AU.init(); AU.resume();
-  if (S.voiceWanted && !Voice.want && Voice.status !== 'denied') Voice.start();
   applyUpgrades(); resetRun(); hideOverlays();
   UI.title.classList.add('hidden'); UI.hud.classList.remove('hidden');
   S.mode = 'countdown'; S.cdT = 0; UI.countdown.classList.remove('hidden'); UI.countdown.innerHTML = '';
@@ -3582,7 +3489,6 @@ function resumeGame() {
 function showTitle() {
   S.mode = 'title'; hideOverlays(); UI.hud.classList.add('hidden'); UI.title.classList.remove('hidden'); UI.countdown.classList.add('hidden');
   $('#bestT').textContent = S.best.toLocaleString('en-IN'); $('#walletT').textContent = S.wallet.toLocaleString('en-IN'); renderMissions();
-  $('#voiceBtn span').textContent = 'VOICE: ' + (S.voiceWanted ? 'ON' : 'OFF');
   $('#muteBtnT span').textContent = 'SOUND: ' + (S.muted ? 'OFF' : 'ON');
 }
 function toMenu() { AU.stopMusic(); resetRun(); showTitle(); }
@@ -3699,7 +3605,6 @@ $('#resumeBtn').addEventListener('click', resumeGame);
 $('#pauseBtn').addEventListener('click', () => { if (S.mode === 'run') pauseGame(); else if (S.mode === 'paused') resumeGame(); });
 $('#muteBtn').addEventListener('click', () => { AU.init(); setMuted(!S.muted); focusWispr(); });
 $('#muteBtnT').addEventListener('click', () => { AU.init(); setMuted(!S.muted); });
-$('#voiceBtn').addEventListener('click', () => { S.voiceWanted = !S.voiceWanted; store.set('voice', S.voiceWanted); if (!S.voiceWanted && Voice.want) Voice.stop(); $('#voiceBtn span').textContent = 'VOICE: ' + (S.voiceWanted ? 'ON' : 'OFF'); });
 $('#howBtn').addEventListener('click', () => { $('#howto').classList.remove('hidden'); $('#closeHow').focus(); });
 $('#closeHow').addEventListener('click', () => $('#howto').classList.add('hidden'));
 $('#shareBtn').addEventListener('click', shareCard);
@@ -3740,7 +3645,7 @@ function initDebug() {
 }
 function debugTick() {
   if (!dbgEl) return; dbgT -= 1 / 60; if (dbgT > 0) return; dbgT = 0.25;
-  $('#dbgTxt').textContent = `fps ${fpsAvg.toFixed(0)} · speed ${S.speed.toFixed(1)} · zone ${S.zone + 1} loop ${S.loop + 1} · obs ${ACTIVE.length} · coins ${CACTIVE.length} · calls ${renderer.info.render.calls} · lowQ ${lowQ} · voice ${Voice.status}`;
+  $('#dbgTxt').textContent = `fps ${fpsAvg.toFixed(0)} · speed ${S.speed.toFixed(1)} · zone ${S.zone + 1} loop ${S.loop + 1} · obs ${ACTIVE.length} · coins ${CACTIVE.length} · calls ${renderer.info.render.calls} · lowQ ${lowQ}`;
 }
 
 /* ============================== MAIN LOOP ============================== */
@@ -3819,7 +3724,6 @@ async function boot() {
   updateChunks(0); envUpdate(0); titleCamTarget(CAM.pos, CAM.look); camera.position.copy(CAM.pos); camera.lookAt(CAM.look); updateWorldFollow(0);
   warmup();
   if (DEBUG) { testPatterns(); initDebug(); }
-  if (!Voice.supported) voiceStatusUI('unsupported');
   showTitle();
   $('#loading').classList.add('hidden');
   last = performance.now();
